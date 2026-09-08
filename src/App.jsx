@@ -381,15 +381,32 @@ const removeOneFromCart = (productId) => {
           className="contact-form"
           onSubmit={async (event) => {
             event.preventDefault();
-            
+
             setFormLoading(true);
             setFormSent(false);
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const formData = new FormData(event.target);
 
-            setFormLoading(false);
-            setFormSent(true);
-            event.target.reset();
+            try {
+              const response = await fetch("https://formspree.io/f/mbgjpkwe", {
+                method: "POST",
+                body: formData,
+                headers: {
+                  Accept: "application/json",
+                },
+              });
+
+              if (response.ok) {
+                setFormSent(true);
+                event.target.reset();
+              } else {
+                alert("Не удалось отправить сообщение. Попробуйте ещё раз.");
+              }
+            } catch {
+              alert("Ошибка соединения. Проверьте интернет и попробуйте ещё раз.");
+            } finally {
+              setFormLoading(false);
+            }
           }}
         >
           <input
