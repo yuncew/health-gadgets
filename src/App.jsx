@@ -378,63 +378,80 @@ const removeOneFromCart = (productId) => {
         </div>
 
         <form
-          className="contact-form"
-          onSubmit={async (event) => {
-            event.preventDefault();
+            className="contact-form"
+            onSubmit={async (event) => {
+              event.preventDefault();
 
-            setFormLoading(true);
-            setFormSent(false);
+          setFormLoading(true);
+          setFormSent(false);
 
-            const formData = new FormData(event.target);
+          const form = event.currentTarget;
+          const formData = new FormData(form);
 
-            try {
-              const response = await fetch("https://formspree.io/f/mbgjpkwe", {
-                method: "POST",
-                body: formData,
-                headers: {
-                  Accept: "application/json",
-                },
-              });
+          try {
+            const response = await fetch("https://formspree.io/f/mbgjpkwe", {
+              method: "POST",
+              body: formData,
+              headers: {
+                Accept: "application/json",
+              },
+            });
 
-              if (response.ok) {
-                setFormSent(true);
-                event.target.reset();
-              } else {
-                alert("Не удалось отправить сообщение. Попробуйте ещё раз.");
-              }
-            } catch {
-              alert("Ошибка соединения. Проверьте интернет и попробуйте ещё раз.");
-            } finally {
-              setFormLoading(false);
+            const result = await response.json();
+
+            if (response.ok) {
+              setFormSent(true);
+              form.reset();
+            } else {
+              console.error("Formspree error:", result);
+              alert(
+                result?.errors?.[0]?.message ||
+                  result?.error ||
+                  "Не удалось отправить сообщение. Попробуйте ещё раз."
+              );
             }
+          } catch (error) {
+            console.error("Form error:", error);
+            alert("Ошибка соединения. Проверьте интернет и попробуйте ещё раз.");
+          } finally {
+            setFormLoading(false);
+          }
+
           }}
-        >
+
+          >
+
           <input
-            type="text"
-            placeholder="Ваше имя"
-            required
+          type="text"
+          name="name"
+          placeholder="Ваше имя"
+          required
           />
 
           <input
-            type="email"
-            placeholder="Ваш e-mail"
-            required
+          type="email"
+          name="email"
+          placeholder="Ваш e-mail"
+          required
           />
 
-          <textarea
-            placeholder="Ваш вопрос"
-            rows="5"
-          ></textarea>
+            <textarea
+              name="message"
+              placeholder="Ваш вопрос"
+              rows="5"
+              required
+            ></textarea>
 
-          {formSent && (
-            <div className="form-success">
-              Спасибо! Ваше сообщение отправлено 💚
-            </div>
+          {formSent && ( <div className="form-success">
+          Спасибо! Ваше сообщение отправлено 💚 </div>
           )}
-          <button type="submit" disabled={formLoading}>
-            {formLoading ? "Отправка..." : "Отправить сообщение"}
-          </button>
-        </form>
+
+            <button type="submit" disabled={formLoading}>
+              {formLoading ? "Отправка..." : "Отправить сообщение"}
+            </button>
+          </form>
+
+
       </section>
 
       {/* КОРЗИНА */}
