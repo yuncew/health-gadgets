@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
+  const imagePath = (path) => `${import.meta.env.BASE_URL}${path}`;
   const [cart, setCart] = useState(() => {
     try {
       const savedCart = localStorage.getItem("healthTechCart");
@@ -50,28 +51,28 @@ useEffect(() => {
     name: "Умные часы Health Watch",
     description: "Контроль пульса, активности и сна",
     price: 7990,
-    image: "/images/smartwatch.jpg",
+    image: imagePath("images/smartwatch.jpg"),
   },
   {
     id: 2,
     name: "Фитнес-браслет Fit Band",
     description: "Шаги, калории и мониторинг активности",
     price: 3990,
-    image: "/images/fitness-band.jpg",
+    image: imagePath("images/fitness-band.jpg"),
   },
   {
     id: 3,
     name: "Умные весы Smart Scale",
     description: "Контроль веса и основных показателей тела",
     price: 4990,
-    image: "/images/smart-scale.jpg",
+    image: imagePath("images/smart-scale.jpg"),
   },
   {
     id: 4,
     name: "Пульсоксиметр Pulse O2",
     description: "Измерение пульса и уровня кислорода",
     price: 2490,
-    image: "/images/pulse-oximeter.jpg",
+    image: imagePath("images/pulse-oximeter.jpg"),
   },
 ];
 
@@ -182,7 +183,7 @@ const removeOneFromCart = (productId) => {
 
         <div className="hero-device">
           <div className="device-circle">
-            <img src="/images/cat.jpg" alt="HealthTech" className="logo-image" />
+            <img src={imagePath("images/cat.jpg")} alt="HealthTech" className="logo-image" />
           </div>
         </div>
       </section>
