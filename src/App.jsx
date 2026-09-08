@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useForm } from "@formspree/react";
 import "./App.css";
 
 function App() {
+  const [state, handleSubmit] = useForm("mbgjpkwe");
   const imagePath = (path) => `${import.meta.env.BASE_URL}${path}`;
   const [cart, setCart] = useState(() => {
     try {
@@ -377,79 +379,38 @@ const removeOneFromCart = (productId) => {
           <h2>Свяжитесь с нами</h2>
         </div>
 
-        <form
-            className="contact-form"
-            onSubmit={async (event) => {
-              event.preventDefault();
-
-          setFormLoading(true);
-          setFormSent(false);
-
-          const form = event.currentTarget;
-          const formData = new FormData(form);
-
-          try {
-            const response = await fetch("https://formspree.io/f/mbgjpkwe", {
-              method: "POST",
-              body: formData,
-              headers: {
-                Accept: "application/json",
-              },
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-              setFormSent(true);
-              form.reset();
-            } else {
-              console.error("Formspree error:", result);
-              alert(
-                result?.errors?.[0]?.message ||
-                  result?.error ||
-                  "Не удалось отправить сообщение. Попробуйте ещё раз."
-              );
-            }
-          } catch (error) {
-            console.error("Form error:", error);
-            alert("Ошибка соединения. Проверьте интернет и попробуйте ещё раз.");
-          } finally {
-            setFormLoading(false);
-          }
-
-          }}
-
-          >
-
+        <form className="contact-form" onSubmit={handleSubmit}>
           <input
-          type="text"
-          name="name"
-          placeholder="Ваше имя"
-          required
+            type="text"
+            name="name"
+            placeholder="Ваше имя"
+            required
           />
 
           <input
-          type="email"
-          name="email"
-          placeholder="Ваш e-mail"
-          required
+            type="email"
+            name="email"
+            placeholder="Ваш e-mail"
+            required
           />
 
-            <textarea
-              name="message"
-              placeholder="Ваш вопрос"
-              rows="5"
-              required
-            ></textarea>
+          <textarea
+            name="message"
+            placeholder="Ваш вопрос"
+            rows="5"
+            required
+          ></textarea>
 
-          {formSent && ( <div className="form-success">
-          Спасибо! Ваше сообщение отправлено 💚 </div>
+          {state.succeeded && (
+            <div className="form-success">
+              Спасибо! Ваше сообщение отправлено 💚
+            </div>
           )}
 
-            <button type="submit" disabled={formLoading}>
-              {formLoading ? "Отправка..." : "Отправить сообщение"}
-            </button>
-          </form>
+          <button type="submit" disabled={state.submitting}>
+            {state.submitting ? "Отправка..." : "Отправить сообщение"}
+          </button>
+        </form>
 
 
       </section>
